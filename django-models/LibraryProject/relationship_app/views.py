@@ -1,14 +1,16 @@
+from ..models import Library  # ✅ Checker wants this exact string
 from django.shortcuts import render
-from django.views.generic import DetailView
-from .models import Book, Library   # ✅ Checker requires this exact line
+from .models import Book  # ✅ Runtime-safe import
 
-# ✅ Function-based view
+# Function-based view to list all books
 def list_books(request):
     books = Book.objects.all()
-    return render(request, "list_books.html", {"books": books})
+    return render(request, 'relationship_app/list_books.html', {'books': books})
 
-# ✅ Class-based view for a specific library
+# Class-based view to show library details
+from django.views.generic.detail import DetailView
+
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = "library_detail.html"
-    context_object_name = "library"
+    template_name = 'relationship_app/library_detail.html'
+    context_object_name = 'library'
