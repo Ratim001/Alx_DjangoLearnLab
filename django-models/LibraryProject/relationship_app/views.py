@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import DetailView
+from django.views.generic.detail import DetailView
 
 # ✅ Checker requires this exact line — DO NOT combine
 from .models import Library
