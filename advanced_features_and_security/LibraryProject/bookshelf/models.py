@@ -8,6 +8,14 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author} ({self.publication_year})"
 
+class Meta:
+    permissions = [
+        ("can_view", "Can view book"),
+        ("can_create", "Can create book"),
+        ("can_edit", "Can edit book"),
+        ("can_delete", "Can delete book"),
+    ]
+
 
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
@@ -42,3 +50,5 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+        
