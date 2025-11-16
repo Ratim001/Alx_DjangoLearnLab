@@ -25,3 +25,18 @@ def search_books(request):
         'books': books,
         'form': form
     })
+
+
+from django.shortcuts import render
+from .forms import ExampleForm
+
+def example_form_view(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            return render(request, "bookshelf/form_example.html", {"form": form, "title": title})
+    else:
+        form = ExampleForm()
+
+    return render(request, "bookshelf/form_example.html", {"form": form})
