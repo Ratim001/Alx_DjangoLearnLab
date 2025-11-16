@@ -9,3 +9,19 @@ from .models import Book
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+from .forms import SearchForm
+
+def search_books(request):
+    form = SearchForm(request.GET)
+
+    if form.is_valid():
+        query = form.cleaned_data["q"]
+        books = Book.objects.filter(title__icontains=query)
+    else:
+        books = Book.objects.none()
+
+    return render(request, 'bookshelf/book_list.html', {
+        'books': books,
+        'form': form
+    })

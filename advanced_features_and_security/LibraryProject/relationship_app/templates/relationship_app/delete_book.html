@@ -1,1 +1,7 @@
 <h1>Delete Book</h1>
+<form method="post">
+    {% csrf_token %}
+    <!-- your form fields -->
+    <input type="text" name="title">
+    <button type="submit">Submit</button>
+</form>
