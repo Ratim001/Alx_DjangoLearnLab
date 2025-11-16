@@ -147,3 +147,34 @@ SESSION_COOKIE_SECURE = False
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+# =====================================================
+# SECURITY SETTINGS
+# =====================================================
+
+# ⚠️ Development vs Production toggle
+import os
+IS_PROD = os.getenv('DJANGO_ENV') == 'production'
+
+DEBUG = not IS_PROD
+ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com'] if IS_PROD else []
+
+# --- HTTPS enforcement ---
+SECURE_SSL_REDIRECT = IS_PROD  # Redirect all HTTP to HTTPS
+
+# --- HSTS (strict HTTPS policy) ---
+SECURE_HSTS_SECONDS = 31536000 if IS_PROD else 0  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_PROD
+SECURE_HSTS_PRELOAD = IS_PROD
+
+# --- Secure cookies ---
+SESSION_COOKIE_SECURE = IS_PROD
+CSRF_COOKIE_SECURE = IS_PROD
+
+# --- Browser-side protections ---
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# --- Proxy awareness (important if behind Nginx/Apache/Heroku/etc.) ---
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
