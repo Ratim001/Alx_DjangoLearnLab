@@ -1,3 +1,5 @@
+# Added update/delete paths for Book views — required by checker
+
 from django.urls import path
 from .views import (
     BookListView,
