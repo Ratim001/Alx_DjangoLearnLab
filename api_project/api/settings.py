@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # ✅ Enables DRF
+    'rest_framework',
+    'api',  # ✅ Enables DRF
 ]
 
 MIDDLEWARE = [
