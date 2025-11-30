@@ -1,41 +1,33 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions
+# api/views.py
+
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
-from .serializers import BookSerializer
-from datetime import datetime
+from .serializers import BookSerializer # Assuming you have a BookSerializer
 
-# ListView: anyone can read
-class BookListView(generics.ListAPIView):
+# --- Combined List and Create View ---
+class BookListCreateView(generics.ListCreateAPIView):
+    """
+    Handles GET (list books) and POST (create a new book).
+    Permission: Read-only for unauthenticated users, create for authenticated users.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # ✅ public read
+    # Allows anyone to read (GET), but only authenticated users to create (POST)
+    permission_classes = [IsAuthenticatedOrReadOnly] 
 
-# DetailView: anyone can read
-class BookDetailView(generics.RetrieveAPIView):
+# --- Combined Detail, Update, and Delete View ---
+class BookDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Handles GET (retrieve detail), PUT/PATCH (update), and DELETE (destroy/delete).
+    Permission: Read-only for unauthenticated, full access for authenticated users.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
-
-# CreateView: only authenticated users
-class BookCreateView(generics.CreateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        # Custom hook: validate and save
-        serializer.save()
-
-# UpdateView: only authenticated users
-class BookUpdateView(generics.UpdateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-# DeleteView: only authenticated users
-class BookDeleteView(generics.DestroyAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-# Create your views here.
+    # Allows anyone to read (GET), but only authenticated users to update/delete
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    # You can customize behavior here, e.g., perform checks before deletion.
+    # def perform_destroy(self, instance):
+    #     # Custom logic before deleting the book
+    #     instance.delete()
