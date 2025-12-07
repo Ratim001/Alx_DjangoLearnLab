@@ -28,6 +28,7 @@ class PostForm(ModelForm):
         model = Post
         fields = ['title', 'content']  # author set in the view
         widgets = {
+            'tags': TagWidget(),
             'title': forms.TextInput(attrs={'placeholder': 'Post title'}),
             'content': forms.Textarea(attrs={'rows': 8, 'placeholder': 'Write your content...'}),
         }
