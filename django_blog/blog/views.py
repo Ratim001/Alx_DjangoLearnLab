@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ProfileForm
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView, LogoutView
+
 
 def register(request):
     if request.method == "POST":
@@ -161,3 +163,30 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('post-detail', kwargs={'pk': self.get_object().post.pk})
+
+# django_blog/blog/views.py
+from django.db.models import Q
+from django.views.generic import ListView
+from django.shortcuts import get_object_or_404, render
+from .models import Post, Tag
+from .models import Post
+
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '').strip()
+        if not q:
+            return Post.objects.none()
+        return Post.objects.filter(
+            Q(title__icontains=q) |
+            Q(content__icontains=q) |
+            Q(tags__name__icontains=q)
+        ).distinct()
+
+def posts_by_tag(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    posts = tag.posts.select_related('author').prefetch_related('tags').order_by('-published_date')
+    return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})

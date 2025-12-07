@@ -28,3 +28,8 @@
   {% block content %}{% endblock %}
 </body>
 </html>
+<!-- blog/templates/blog/base.html -->
+<form action="{% url 'search' %}" method="get" style="margin: 1rem 0;">
+  <input type="text" name="q" placeholder="Search posts by title, content, or tag">
+  <button type="submit">Search</button>
+</form>

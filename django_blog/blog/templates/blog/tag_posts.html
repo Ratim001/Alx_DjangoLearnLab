@@ -1,0 +1,16 @@
+<!-- blog/templates/blog/tag_posts.html -->
+{% extends 'blog/base.html' %}
+{% block title %}#{{ tag.name }} posts{% endblock %}
+{% block content %}
+<h1>Tag: #{{ tag.name }}</h1>
+<ul>
+  {% for post in posts %}
+    <li>
+      <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a>
+    </li>
+  {% empty %}
+    <li>No posts with this tag yet.</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'post-list' %}">Back to posts</a>
+{% endblock %}
