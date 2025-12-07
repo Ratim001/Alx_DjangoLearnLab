@@ -191,6 +191,7 @@ def posts_by_tag(request, tag_name):
     posts = tag.posts.select_related('author').prefetch_related('tags').order_by('-published_date')
     return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})
 # blog/views.py
+
 from django.views.generic import ListView
 from .models import Post
 
