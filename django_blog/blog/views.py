@@ -33,15 +33,19 @@ def profile(request):
 
     return render(request, "blog/profile.html", {"form": form})
 
-# django_blog/blog/views.py
+class UserLoginView(LoginView):
+    template_name = 'blog/login.html'
+
+class UserLogoutView(LogoutView):
+    next_page = 'login'
+
+# blog/views.py
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
 from django.contrib import messages
 from .models import Post
 from .forms import PostForm
-from django.contrib.auth.views import LoginView, LogoutView
 
 class PostListView(ListView):
     model = Post
@@ -61,7 +65,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, 'Post created successfully.')
+        messages.success(self.request, "Post created successfully.")
         return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -72,12 +76,8 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.get_object().author == self.request.user
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'You are not allowed to edit this post.')
-        return redirect('post-detail', pk=self.get_object().pk)
-
     def form_valid(self, form):
-        messages.success(self.request, 'Post updated successfully.')
+        messages.success(self.request, "Post updated successfully.")
         return super().form_valid(form)
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -87,12 +87,3 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.get_object().author == self.request.user
-
-    def handle_no_permission(self):
-        messages.error(self.request, 'You are not allowed to delete this post.')
-        return redirect('post-detail', pk=self.get_object().pk)
-class UserLoginView(LoginView):
-    template_name = 'blog/login.html'
-
-class UserLogoutView(LogoutView):
-    next_page = 'login'
