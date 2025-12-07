@@ -10,12 +10,14 @@ class SmokeTests(APITestCase):
         self.assertEqual(status.HTTP_200_OK, 200)
 
 User = get_user_model()
-
 class BookAPITests(APITestCase):
     def setUp(self):
-        # Create a user and authenticate
+        # Create a user in the test database
         self.user = User.objects.create_user(username="tester", password="pass1234")
-        self.client.force_authenticate(user=self.user)
+
+        # Log in using the test client
+        logged_in = self.client.login(username="tester", password="pass1234")
+        self.assertTrue(logged_in)  # sanity check
 
         # Create a book in the test database
         self.book = Book.objects.create(
@@ -28,6 +30,8 @@ class BookAPITests(APITestCase):
 
         self.list_url = reverse("book-list")  # adjust if your router name differs
 
+
+
     def test_list_books_returns_data_and_status_code(self):
         response = self.client.get(self.list_url)
         # ✅ Check status code
@@ -39,3 +43,5 @@ class BookAPITests(APITestCase):
         first = response.data[0]
         self.assertIn("title", first)
         self.assertIn("author", first)
+
+
