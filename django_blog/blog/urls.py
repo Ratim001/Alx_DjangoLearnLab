@@ -5,7 +5,7 @@ from .views import (
     PostListView, PostDetailView, PostCreateView,
     PostUpdateView, PostDeleteView,
     CommentCreateView, CommentUpdateView, CommentDeleteView,
-    posts_by_tag,
+    SearchResultsView, PostByTagListView,
 )
 
 urlpatterns = [
