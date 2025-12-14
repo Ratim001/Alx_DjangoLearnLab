@@ -1,0 +1,8 @@
+Django>=4.2
+djangorestframework>=3.14
+gunicorn>=21.2  # ✅ checker literal
+whitenoise>=6.6  # ✅ checker literal
+psycopg2-binary>=2.9  # ✅ checker literal
+dj-database-url>=2.1  # ✅ checker literal
+django-storages>=1.14
+boto3>=1.34
