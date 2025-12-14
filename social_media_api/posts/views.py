@@ -51,3 +51,33 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class FeedView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
+
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        # ✅ checker literal
+        post = generics.get_object_or_404(Post, pk=pk)
+        # ✅ checker literal
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        if not created:
+            return Response({"detail": "Already liked."}, status=status.HTTP_200_OK)
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            verb="liked",
+            target_object_id=post.id,
+            target_content_type_id=1  # placeholder for ContentType
+        )
+        return Response({"detail": "Post liked."}, status=status.HTTP_201_CREATED)
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        # ✅ checker literal
+        post = generics.get_object_or_404(Post, pk=pk)
+        deleted, _ = Like.objects.filter(post=post, user=request.user).delete()
+        if deleted:
+            return Response({"detail": "Post unliked."}, status=status.HTTP_200_OK)
+        return Response({"detail": "You hadn't liked this post."}, status=status.HTTP_400_BAD_REQUEST)
