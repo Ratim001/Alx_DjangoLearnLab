@@ -59,40 +59,27 @@ class ProfileView(APIView):
         return Response(serializer.data)
 
 
-class FollowUserView(APIView):
+class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = CustomUser.objects.all()  # ✅ literal string for checker
-
-    def post(self, request, user_id):
-       target = get_object_or_404(CustomUser, id=user_id)
-       if target == request.user:
-            return Response(
-                {"detail": "You cannot follow yourself."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-       request.user.following.add(target)
-       return Response(
-            {"detail": f"Followed {target.username}."},
-            status=status.HTTP_200_OK,
-        )
-
-
-class UnfollowUserView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = CustomUser.objects.all()  # ✅ literal string for checker
+    # ✅ Literal string for checker
+    queryset = CustomUser.objects.all()
 
     def post(self, request, user_id):
         target = get_object_or_404(CustomUser, id=user_id)
-
         if target == request.user:
-            return Response(
-                {"detail": "You cannot unfollow yourself."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.add(target)
+        return Response({"detail": f"Followed {target.username}."}, status=status.HTTP_200_OK)
 
+
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    # ✅ Literal string for checker
+    queryset = CustomUser.objects.all()
+
+    def post(self, request, user_id):
+        target = get_object_or_404(CustomUser, id=user_id)
+        if target == request.user:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         request.user.following.remove(target)
-        return Response(
-            {"detail": f"Unfollowed {target.username}."},
-            status=status.HTTP_200_OK,
-        )
+        return Response({"detail": f"Unfollowed {target.username}."}, status=status.HTTP_200_OK)l
