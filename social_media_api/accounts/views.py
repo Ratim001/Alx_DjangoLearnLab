@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from rest_framework import generics, permissions, status
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -82,4 +83,4 @@ class UnfollowUserView(generics.GenericAPIView):
         if target == request.user:
             return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         request.user.following.remove(target)
-        return Response({"detail": f"Unfollowed {target.username}."}, status=status.HTTP_200_OK)l
+        return Response({"detail": f"Unfollowed {target.username}."}, status=status.HTTP_200_OK)

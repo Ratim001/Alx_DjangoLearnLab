@@ -1,18 +1,22 @@
 # social_media_api/posts/serializers.py
 from django.contrib.auth import get_user_model
+# posts/serializers.py
 from rest_framework import serializers
-from .models import Post, Comment
-
-User = get_user_model()
+from .models import Post, Comment, Like
 
 class PostSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source="author.username", read_only=True)
+    likes_count = serializers.IntegerField(source="likes.count", read_only=True)
     comments_count = serializers.IntegerField(source="comments.count", read_only=True)
 
     class Meta:
         model = Post
-        fields = ["id", "author", "author_username", "title", "content", "created_at", "updated_at", "comments_count"]
-        read_only_fields = ["author", "created_at", "updated_at", "comments_count"]
+        fields = [
+            "id", "author", "author_username",
+            "title", "content", "created_at", "updated_at",
+            "likes_count", "comments_count",
+        ]
+        read_only_fields = ["author", "created_at", "updated_at", "likes_count", "comments_count"]
 
     def create(self, validated_data):
         validated_data["author"] = self.context["request"].user
@@ -29,3 +33,9 @@ class CommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["author"] = self.context["request"].user
         return super().create(validated_data)
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ["id", "post", "user", "created_at"]
+        read_only_fields = ["user", "created_at"]
