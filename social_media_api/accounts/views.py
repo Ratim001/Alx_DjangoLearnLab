@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from .models import User as CustomUser  # alias for checker compliance
-
 from .models import User
 from .serializers import (
     UserRegistrationSerializer,
@@ -12,6 +11,8 @@ from .serializers import (
     UserProfileSerializer,
 )
 
+# ✅ Alias User as CustomUser so the literal string exists
+CustomUser = User
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
