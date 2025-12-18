@@ -2,6 +2,7 @@
 from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.db.models import Count
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from notifications.models import Notification  # ✅ import Notification
@@ -26,6 +27,13 @@ class PostViewSet(viewsets.ModelViewSet):
     search_fields = ["title", "content"]
     ordering_fields = ["created_at", "updated_at", "title"]
 
+    def get_queryset(self):
+        # Optimize queries by selecting related author and annotating counts
+        return Post.objects.select_related('author').annotate(
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True)
+        )
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -37,6 +45,10 @@ class CommentViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["content"]
     ordering_fields = ["created_at", "updated_at"]
+
+    def get_queryset(self):
+        # Optimize queries by selecting related author and post
+        return Comment.objects.select_related('author', 'post')
 
     def perform_create(self, serializer):
         comment = serializer.save(author=self.request.user)

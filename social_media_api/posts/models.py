@@ -13,6 +13,12 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        # Add indexes for frequently queried fields to improve performance
+        indexes = [
+            models.Index(fields=['-created_at']),  # For ordering by date
+            models.Index(fields=['author', '-created_at']),  # For author's posts
+            models.Index(fields=['title']),  # For title searches
+        ]
 
     def __str__(self):
         return f"{self.title} by {self.author}"
@@ -26,6 +32,11 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+        # Add indexes for frequently queried fields
+        indexes = [
+            models.Index(fields=['post', 'created_at']),  # For comments on a post
+            models.Index(fields=['author']),  # For author's comments
+        ]
 
     def __str__(self):
         return f"Comment by {self.author} on {self.post_id}"

@@ -57,11 +57,20 @@ class PostListView(ListView):
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-published_date']
+    paginate_by = 10  # Add pagination to avoid loading all posts at once
+
+    def get_queryset(self):
+        # Optimize by selecting related author
+        return Post.objects.select_related('author').order_by('-published_date')
 
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
+
+    def get_queryset(self):
+        # Optimize by selecting related author and prefetching comments with their authors
+        return Post.objects.select_related('author').prefetch_related('comments__author', 'tags')
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -175,12 +184,14 @@ class SearchResultsView(ListView):
     model = Post
     template_name = 'blog/search_results.html'
     context_object_name = 'posts'
+    paginate_by = 10  # Add pagination for search results
 
     def get_queryset(self):
         q = self.request.GET.get('q', '').strip()
         if not q:
             return Post.objects.none()
-        return Post.objects.filter(
+        # Optimize by selecting related author and prefetching tags
+        return Post.objects.select_related('author').prefetch_related('tags').filter(
             Q(title__icontains=q) |
             Q(content__icontains=q) |
             Q(tags__name__icontains=q)
@@ -199,10 +210,14 @@ class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/tag_posts.html'
     context_object_name = 'posts'
+    paginate_by = 10  # Add pagination
 
     def get_queryset(self):
         tag_slug = self.kwargs.get('tag_slug')
-        return Post.objects.filter(tags__slug=tag_slug).distinct()
+        # Optimize by selecting related author and prefetching tags
+        return Post.objects.select_related('author').prefetch_related('tags').filter(
+            tags__slug=tag_slug
+        ).distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

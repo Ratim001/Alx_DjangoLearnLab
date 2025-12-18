@@ -16,6 +16,15 @@ class Book(models.Model):
     publication_year = models.IntegerField()
     author = models.ForeignKey(Author, related_name='books', on_delete=models.CASCADE)
 
+    class Meta:
+        # Add indexes for frequently searched/filtered fields to improve performance
+        indexes = [
+            models.Index(fields=['title']),  # For title searches
+            models.Index(fields=['author']),  # For filtering by author
+            models.Index(fields=['publication_year']),  # For year filtering
+            models.Index(fields=['author', 'publication_year']),  # Combined filter
+        ]
+
     def __str__(self):
         return f"{self.title} ({self.publication_year})"
 
@@ -35,3 +44,7 @@ class BookViewSet(viewsets.ModelViewSet):
     search_fields = ['title', 'author__name']   # ✅ search by author name
     ordering_fields = ['title', 'publication_year']
     ordering = ['title']  # default ordering
+
+    def get_queryset(self):
+        # Optimize queries by selecting related author to avoid N+1 queries
+        return Book.objects.select_related('author')
