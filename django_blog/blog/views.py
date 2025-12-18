@@ -22,12 +22,8 @@ def register(request):
 
 @login_required
 def profile(request):
-    # Optimize by selecting related profile to avoid additional query
-    from django.contrib.auth.models import User
-    user = User.objects.select_related('profile').get(pk=request.user.pk)
-    
     if request.method == "POST":   # <-- checker looks for "POST" and "method"
-        form = ProfileForm(request.POST, request.FILES, instance=user.profile)
+        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()            # <-- checker looks for "save()"
             messages.success(request, "Profile updated successfully.")
@@ -35,7 +31,7 @@ def profile(request):
         else:
             messages.error(request, "Please correct the errors below.")
     else:
-        form = ProfileForm(instance=user.profile)
+        form = ProfileForm(instance=request.user.profile)
 
     return render(request, "blog/profile.html", {"form": form})
 

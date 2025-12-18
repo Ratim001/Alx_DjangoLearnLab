@@ -20,12 +20,14 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = ["author", "created_at", "updated_at", "likes_count", "comments_count"]
 
     def get_likes_count(self, obj):
-        # Return annotated count if available, otherwise query (for single objects)
-        return getattr(obj, 'likes_count', obj.likes.count())
+        # Return annotated count if available, otherwise default to 0
+        # Annotation should always be present when using PostViewSet
+        return getattr(obj, 'likes_count', 0)
     
     def get_comments_count(self, obj):
-        # Return annotated count if available, otherwise query (for single objects)
-        return getattr(obj, 'comments_count', obj.comments.count())
+        # Return annotated count if available, otherwise default to 0
+        # Annotation should always be present when using PostViewSet
+        return getattr(obj, 'comments_count', 0)
 
     def create(self, validated_data):
         validated_data["author"] = self.context["request"].user

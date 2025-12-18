@@ -2,6 +2,7 @@
 from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.db.models import Count
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from notifications.models import Notification  # ✅ import Notification
@@ -28,7 +29,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Optimize queries by selecting related author and annotating counts
-        from django.db.models import Count
         return Post.objects.select_related('author').annotate(
             likes_count=Count('likes', distinct=True),
             comments_count=Count('comments', distinct=True)
