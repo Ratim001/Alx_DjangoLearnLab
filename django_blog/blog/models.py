@@ -7,6 +7,13 @@ class Post(models.Model):
     published_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        # Add indexes for commonly queried fields to improve performance
+        indexes = [
+            models.Index(fields=['-published_date']),  # For ordering by date
+            models.Index(fields=['author', '-published_date']),  # For author's posts
+        ]
+
     def __str__(self):
         return self.title
 
@@ -33,6 +40,10 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['name']
+        # Add index for name searches
+        indexes = [
+            models.Index(fields=['name']),
+        ]
 
     def __str__(self):
         return self.name

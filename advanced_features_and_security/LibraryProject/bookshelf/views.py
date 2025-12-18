@@ -7,6 +7,7 @@ from .models import Book
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
+    # Add select_related if Book has foreign keys to optimize queries
     books = Book.objects.all()
     return render(request, 'bookshelf/book_list.html', {'books': books})
 
@@ -17,6 +18,7 @@ def search_books(request):
 
     if form.is_valid():
         query = form.cleaned_data["q"]
+        # Add select_related if Book has foreign keys to optimize queries
         books = Book.objects.filter(title__icontains=query)
     else:
         books = Book.objects.none()
