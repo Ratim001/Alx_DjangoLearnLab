@@ -22,3 +22,20 @@ This repository serves as a comprehensive learning sandbox for mastering Django,
 1. Clone the repository:
    ```bash
    git clone https://github.com/Ratim001/Alx_DjangoLearnLab.git
+   ```
+2. Navigate to the desired folder and review the contents or execute scripts as per individual README instructions.
+3. Run the Django server where applicable:
+   ```bash
+   python manage.py runserver
+   ```
+
+📚 **Learning Goals**
+- Grasp the fundamentals of Django and its ecosystem.
+- Build and consume REST APIs.
+- Understand Django's security features and advanced use-cases.
+- Gain experience in building end-to-end projects with Django.
+
+💡 Want to contribute or have feedback? Feel free to reach out via [GitHub issues](https://github.com/Ratim001/Alx_DjangoLearnLab/issues).
+
+---
+Happy Coding! 🎉
