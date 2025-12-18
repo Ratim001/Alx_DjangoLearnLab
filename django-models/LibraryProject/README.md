@@ -1,23 +1,37 @@
 # LibraryProject
 
 📖 **Overview**  
-The **LibraryProject** demonstrates the use of Django models for creating, managing, and querying structured data. This project focuses on understanding Django's powerful Object-Relational Mapping (ORM) system and database relationships.
+The **LibraryProject** demonstrates the use of advanced Django models for building and manipulating database relationships. It provides practical examples of One-to-One, One-to-Many, and Many-to-Many relationships, along with robust querying capabilities using Django's ORM.
 
 ---
 
 🛠 **Features**  
-- Creation of Django models for structured data representation.
-- Implementation of database relationships (One-to-Many, Many-to-Many).
-- Default SQLite integration for development.
-- Data querying using Django's ORM.
+- **Model Relationships**:
+  - Handles various database relationships (e.g., One-to-Many, Many-to-Many).
+  - Implements efficient querying and data management.
+- **Permissions**:
+  - Custom user permissions for optimized access to different models.
+- **SQLite Integration**:
+  - Default development database for storing project data.
+- **Apps**:
+  - **Bookshelf**: Demonstrates core functionalities related to data storage and manipulation.
+  - **Relationship App**: Explores complex model relationships and sample queries.
 
 ---
 
 📂 **Project Structure**  
-- **`LibraryProject/`**: Main configuration and settings for the project.
-   - **`models.py`**: Defines the schema and relationships for various entities.
-   - **`db.sqlite3`**: SQLite database for persistent development data.
-   - **`manage.py`**: Command-line utility for administrative tasks.
+- **`LibraryProject/`**:
+   - Central configuration and settings directory for the project.
+- **`bookshelf/`**:
+   - Focuses on basic data operations with Django models.
+- **`relationship_app/`**:
+   - Implements advanced features like model relationships and custom queries.
+- **Database Files**:
+   - `db.sqlite3`: Default SQLite database for development.
+- **`manage.py`**:
+   - Command-line utility for administrative tasks.
+- **Root README.md**:
+   - Project-level description and usage guide.
 
 ---
 
